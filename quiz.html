@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슈퍼센트 멤버 퀴즈</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 50%, #FFD93D 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 70px rgba(255, 107, 157, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* 시작 화면 */
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .start-date {
+            color: #FF6B9D;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        .start-info {
+            background: #FFF5F7;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        .start-info-item {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .start-info-item strong {
+            color: #FF6B9D;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF9E6 100%);
+            border-radius: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #FFE5EC;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B9D 0%, #FFA07A 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .photo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .photo {
+            max-width: 300px;
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.3);
+            border: 5px solid #FFF;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            border: 3px solid #FFE5EC;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        .option-btn:hover {
+            border-color: #FF6B9D;
+            background: #FFF5F7;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 157, 0.2);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+            color: white;
+            border-color: #FF6B9D;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 107, 157, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .btn-secondary {
+            background: #FFD93D;
+            color: #333;
+            box-shadow: 0 8px 20px rgba(255, 217, 61, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #FFC700;
+            transform: translateY(-3px);
+        }
+
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-screen h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-score {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6B9D, #FFA07A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+        }
+
+        .result-details {
+            background: #FFF5F7;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 2px solid #FFE5EC;
+            font-size: 16px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: #FF6B9D;
+        }
+
+        .result-value.correct {
+            color: #4CAF50;
+        }
+
+        .result-value.wrong {
+            color: #FF6B9D;
+        }
+
+        .wrong-list {
+            text-align: left;
+            background: #FFF5F7;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .wrong-item {
+            padding: 12px;
+            border-bottom: 2px solid #FFE5EC;
+            font-size: 15px;
+        }
+
+        .wrong-item:last-child {
+            border-bottom: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .start-title {
+                font-size: 36px;
+            }
+
+            .photo {
+                max-width: 250px;
+                height: 250px;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 시작 화면 -->
+        <div id="startScreen">
+            <div class="start-screen">
+                <div class="start-title">🎯</div>
+                <h1>슈퍼센트 멤버 퀴즈</h1>
+                
+                <p style="font-size: 18px; color: #666; line-height: 1.6; margin-bottom: 35px;">
+                    어느덧 <strong>200명이 넘어버린 슈퍼센트</strong><br>
+                    멤버 이름 마스터에 도전하세요! 🔥
+                </p>
+                
+                <div class="start-info">
+                    <div class="start-info-item">🏆 당신의 얼굴 기억력을 테스트하세요!</div>
+                    <div class="start-info-item">❓ 라운드당 <strong>15문제</strong></div>
+                    <div class="start-info-item">🎲 매번 <strong>랜덤</strong> 출제</div>
+                </div>
+
+                <button class="btn btn-primary" onclick="startQuiz()" style="width: 100%; font-size: 20px; padding: 20px; margin-bottom: 20px;">
+                    퀴즈 시작하기 🚀
+                </button>
+                
+                <div style="text-align: right; color: #ccc; font-size: 11px;">
+                    기준일: 2025/12/09
+                </div>
+            </div>
+        </div>
+
+        <!-- 퀴즈 화면 -->
+        <div id="quizScreen" class="hidden">
+            <h1>🎯 슈퍼센트 멤버 퀴즈</h1>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">진행</div>
+                    <div class="stat-value" id="progress">0/15</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <div class="photo-container">
+                <img id="photo" class="photo" src="" alt="멤버 사진">
+            </div>
+
+            <div class="options" id="options">
+                <button class="option-btn" onclick="selectAnswer(0)"></button>
+                <button class="option-btn" onclick="selectAnswer(1)"></button>
+                <button class="option-btn" onclick="selectAnswer(2)"></button>
+                <button class="option-btn" onclick="selectAnswer(3)"></button>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="nextQuestion()" style="width: 100%;">다음 문제</button>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="resultScreen" class="result-screen hidden">
+            <h2>🎉 라운드 완료!</h2>
+            <div class="result-score" id="finalScore">0/15</div>
+            
+            <div class="result-details">
+                <div class="result-item">
+                    <span class="result-label">정답</span>
+                    <span class="result-value correct" id="correctResult">0개</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">오답</span>
+                    <span class="result-value wrong" id="wrongResult">0개</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">정답률</span>
+                    <span class="result-value" id="percentageResult">0%</span>
+                </div>
+            </div>
+
+            <div id="wrongListContainer" class="hidden">
+                <h3 style="margin-bottom: 15px; color: #FF6B9D;">틀린 문제 복습</h3>
+                <div class="wrong-list" id="wrongList"></div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="restartQuiz()">새 라운드 시작</button>
+                <button class="btn btn-secondary" onclick="goToStart()">처음으로</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 모든 멤버 목록 (204명)
+        const allMembers = [
+            "구피", "그루트", "그린", "글로", "나미", "네이선", "네이트", "노라", "노바", "노이",
+            "다우니", "다이고", "다즈", "단테", "당고", "덕구", "던컨", "데빈", "디뉴", "디오",
+            "라니", "라스", "라일리", "라파", "러미", "럼블", "레나", "레몬", "레미", "레오",
+            "레이", "레인", "로건", "로렌스", "로완", "로지", "론", "루나", "루루", "루미",
+            "루비", "루시오", "루이스", "루카", "리마", "리아", "리암", "리즈", "마루", "마리",
+            "마린", "마이크", "매디", "매튜", "메이", "멜론", "모건", "모세스", "모카", "몰리",
+            "무무", "미니", "미로", "미아", "미야", "민디", "민즈", "밀라", "바넬", "바닐라",
+            "바울", "밤비", "백비", "버스", "베루", "벤", "보리", "브라운", "브룩", "브리",
+            "블루", "비나", "비니", "비모", "비비", "비타", "비히", "빈센트", "산초", "샐리",
+            "샘", "소낙", "소닉", "소피", "소피아", "솔", "수잔", "슈슈", "스노우", "스타워커",
+            "스탠", "스텔라", "스톤", "스티브", "시몬", "시시", "신디", "실버", "써머", "아론",
+            "아리", "아스카", "아이루", "알렉스", "알피", "애쉬", "앨런", "앨빈", "에드워드", "에드윈",
+            "에스카", "세영", "엘라이", "엘린", "엘머", "엠버", "오류", "오웬", "올리", "요다",
+            "윌리", "유니", "이더", "이든", "이안", "재니", "재파크", "저니", "제이", "제드",
+            "제레미", "제이드", "제이미", "제이슈", "제이스", "제이슨", "제이콥", "제이크", "제임스", "조노",
+            "조니", "조셉", "조웰", "주드", "줄리", "지노", "지니", "지지", "진저", "찬스",
+            "체리", "초파", "카로", "카일", "칼슨", "캐시", "캐시카스", "캣니스", "케빈", "케이든",
+            "켄신", "코니", "코코", "콜드", "쿠퍼", "쿼츠", "크로스", "크리스", "크리시", "키라",
+            "타비", "타이드", "테디", "테리", "토드", "토리", "토트", "티샤", "팽", "페퍼",
+            "포리", "포피", "푸리티", "프레소", "플라워", "피비", "하루", "하퍼", "한나", "헤니",
+            "허수", "헤이즈", "헤일리", "헨도", "환타", "후키", "휴즈", "히니"
+        ];
+
+        const QUESTIONS_PER_ROUND = 15;
+        
+        // 헷갈리는 닉네임 그룹 (비슷한 이름들끼리)
+        const similarNames = [
+            ["제이", "제이스", "제이슨", "제이크", "제이콥", "제이미", "제이드", "제이슈", "제임스"],
+            ["루나", "루루", "루미", "루비", "루카", "루이스", "루시오"],
+            ["레나", "레몬", "레미", "레오", "레이", "레인"],
+            ["로건", "로렌스", "로완", "로지", "론"],
+            ["마루", "마리", "마린", "마이크"],
+            ["노라", "노바", "노이"],
+            ["리아", "리암", "리즈", "리마"],
+            ["비나", "비니", "비모", "비비", "비타", "비히", "빈센트"],
+            ["소피", "소피아", "소닉", "소낙"],
+            ["엘라이", "엘린", "엘머"],
+            ["캐시", "캐시카스", "캣니스"],
+            ["크로스", "크리스", "크리시"],
+            ["코니", "코코"],
+            ["테디", "테리"],
+            ["토드", "토리", "토트"],
+            ["스탠", "스텔라", "스톤", "스티브"],
+            ["던컨", "덕구"],
+            ["밤비", "백비"],
+            ["보리", "브리"],
+            ["아론", "아리"],
+            ["앨런", "앨빈"],
+            ["에드워드", "에드윈"],
+            ["조노", "조니", "조셉", "조엘"],
+            ["지노", "지니", "지지"],
+            ["포리", "포피"],
+            ["하루", "하퍼", "한나"],
+            ["민디", "민즈", "밀라"],
+            ["케빈", "케이든", "켄신"],
+            ["타비", "타이드"],
+            ["헤이즈", "헤일리", "해니", "헨도"],
+            ["환타", "후키", "휴즈", "히니"]
+        ];
+        
+        let currentMembers = [];
+        let currentIndex = 0;
+        let userAnswers = [];
+        let currentAnswer = "";
+        let selectedIndex = -1;
+
+        // 퀴즈 시작
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            initRound();
+        }
+
+        // 라운드 초기화
+        function initRound() {
+            // 204명 중 랜덤 15명 선택
+            const shuffled = [...allMembers];
+            shuffleArray(shuffled);
+            currentMembers = shuffled.slice(0, QUESTIONS_PER_ROUND);
+            
+            currentIndex = 0;
+            userAnswers = [];
+            
+            loadQuestion();
+        }
+
+        // 배열 섞기
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // 문제 로드
+        function loadQuestion() {
+            if (currentIndex >= currentMembers.length) {
+                showResult();
+                return;
+            }
+
+            // 선택 초기화
+            selectedIndex = -1;
+            currentAnswer = currentMembers[currentIndex];
+            
+            // 사진 로드 안정성 강화
+            const photoElement = document.getElementById('photo');
+            const newSrc = `photos/${currentAnswer}.jpg`;
+            
+            // 로딩 타임아웃 설정 (3초)
+            let loadTimeout;
+            let isLoaded = false;
+            
+            // 이전 이미지 초기화
+            photoElement.style.opacity = '0.3';
+            photoElement.src = '';
+            
+            // 새 이미지 로드
+            const img = new Image();
+            
+            img.onload = function() {
+                if (!isLoaded) {
+                    isLoaded = true;
+                    clearTimeout(loadTimeout);
+                    photoElement.src = img.src;
+                    photoElement.style.opacity = '1';
+                    generateAndShowOptions();
+                }
+            };
+            
+            img.onerror = function() {
+                if (!isLoaded) {
+                    isLoaded = true;
+                    clearTimeout(loadTimeout);
+                    console.error('이미지 로드 실패:', currentAnswer);
+                    // 재시도
+                    photoElement.src = newSrc + '?retry=' + Date.now();
+                    photoElement.style.opacity = '1';
+                    generateAndShowOptions();
+                }
+            };
+            
+            // 타임아웃 설정 (3초 후 강제 진행)
+            loadTimeout = setTimeout(function() {
+                if (!isLoaded) {
+                    isLoaded = true;
+                    photoElement.src = newSrc;
+                    photoElement.style.opacity = '1';
+                    generateAndShowOptions();
+                }
+            }, 3000);
+            
+            // 이미지 로드 시작
+            img.src = newSrc;
+
+            // 통계 업데이트
+            updateStats();
+        }
+        
+        // 보기 생성 및 표시
+        function generateAndShowOptions() {
+            const options = generateOptions(currentAnswer);
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            optionButtons.forEach((btn, idx) => {
+                btn.textContent = options[idx];
+                btn.className = 'option-btn';
+                btn.disabled = false;
+            });
+        }
+
+        // 보기 생성 - 난이도 상승: 초성/글자 유사도 우선
+        function generateOptions(answer) {
+            const options = [answer];
+            
+            // 1단계: 같은 그룹 이름들 (가장 헷갈림)
+            let similarGroup = [];
+            for (const group of similarNames) {
+                if (group.includes(answer)) {
+                    similarGroup = group.filter(name => name !== answer);
+                    break;
+                }
+            }
+            
+            // 2단계: 초성이 같은 이름들
+            const firstChar = answer[0];
+            const sameInitial = allMembers.filter(m => 
+                m !== answer && 
+                m[0] === firstChar && 
+                !similarGroup.includes(m)
+            );
+            
+            // 3단계: 글자가 겹치는 이름들
+            const sharedChars = allMembers.filter(m => {
+                if (m === answer || similarGroup.includes(m) || sameInitial.includes(m)) return false;
+                // 한 글자라도 겹치면
+                for (let char of answer) {
+                    if (m.includes(char)) return true;
+                }
+                return false;
+            });
+            
+            // 우선순위대로 보기 채우기
+            const candidates = [...similarGroup, ...sameInitial, ...sharedChars];
+            
+            // 80% 확률로 헷갈리는 이름 3개 모두 포함
+            if (candidates.length >= 3 && Math.random() > 0.2) {
+                shuffleArray(candidates);
+                options.push(...candidates.slice(0, 3));
+            } 
+            // 20% 확률로 헷갈리는 이름 2개 + 랜덤 1개
+            else if (candidates.length >= 2) {
+                shuffleArray(candidates);
+                options.push(...candidates.slice(0, 2));
+                
+                // 나머지 랜덤
+                const otherMembers = allMembers.filter(m => 
+                    !options.includes(m) && 
+                    !candidates.includes(m)
+                );
+                if (otherMembers.length > 0) {
+                    options.push(otherMembers[Math.floor(Math.random() * otherMembers.length)]);
+                }
+            }
+            
+            // 옵션이 부족하면 추가
+            while (options.length < 4) {
+                const otherMembers = allMembers.filter(m => !options.includes(m));
+                if (otherMembers.length === 0) break;
+                
+                // 남은 후보 중에서 선택
+                if (candidates.length > options.length - 1) {
+                    const next = candidates.find(c => !options.includes(c));
+                    if (next) {
+                        options.push(next);
+                        continue;
+                    }
+                }
+                
+                // 그래도 없으면 랜덤
+                const random = otherMembers[Math.floor(Math.random() * otherMembers.length)];
+                options.push(random);
+            }
+            
+            shuffleArray(options);
+            return options;
+        }
+
+        // 답 선택
+        function selectAnswer(index) {
+            selectedIndex = index;
+            const optionButtons = document.querySelectorAll('.option-btn');
+            
+            // 모든 버튼에서 선택 해제 후 선택된 버튼만 표시
+            optionButtons.forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        // 다음 문제
+        function nextQuestion() {
+            if (selectedIndex === -1) {
+                alert('답을 선택해주세요!');
+                return;
+            }
+            
+            // 답안 저장
+            const optionButtons = document.querySelectorAll('.option-btn');
+            const selected = optionButtons[selectedIndex].textContent;
+            userAnswers.push({
+                question: currentAnswer,
+                selected: selected,
+                correct: currentAnswer
+            });
+            
+            currentIndex++;
+            loadQuestion();
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            document.getElementById('progress').textContent = `${currentIndex + 1}/${QUESTIONS_PER_ROUND}`;
+            
+            const progress = ((currentIndex + 1) / QUESTIONS_PER_ROUND) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // 결과 표시
+        function showResult() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            // 정답 개수 계산
+            const correctCount = userAnswers.filter(a => a.selected === a.correct).length;
+            const wrongCount = QUESTIONS_PER_ROUND - correctCount;
+            const percentage = ((correctCount / QUESTIONS_PER_ROUND) * 100).toFixed(1);
+            
+            document.getElementById('finalScore').textContent = `${correctCount}/${QUESTIONS_PER_ROUND}`;
+            document.getElementById('correctResult').textContent = `${correctCount}개`;
+            document.getElementById('wrongResult').textContent = `${wrongCount}개`;
+            document.getElementById('percentageResult').textContent = `${percentage}%`;
+            
+            // 틀린 문제 표시
+            const wrongAnswers = userAnswers.filter(a => a.selected !== a.correct);
+            if (wrongAnswers.length > 0) {
+                document.getElementById('wrongListContainer').classList.remove('hidden');
+                const wrongList = document.getElementById('wrongList');
+                wrongList.innerHTML = wrongAnswers.map((item, idx) => 
+                    `<div class="wrong-item">
+                        ${idx + 1}. <strong>${item.question}</strong><br>
+                        선택: ${item.selected} → 
+                        <span style="color: #4CAF50; font-weight: 700;">정답: ${item.correct}</span>
+                    </div>`
+                ).join('');
+            } else {
+                document.getElementById('wrongListContainer').classList.add('hidden');
+            }
+        }
+
+        // 새 라운드 시작
+        function restartQuiz() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            initRound();
+        }
+
+        // 처음으로
+        function goToStart() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
